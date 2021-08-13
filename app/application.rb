@@ -21,11 +21,35 @@ class Application
       return [200, { 'Content-Type' => 'application/json' }, [Game.all.to_json ]]
     end
 
+
+    #team Delete
+    if req.path.match('/team/') && req.delete?
+      id = req.path.split('/')[2]
+      puts id
+      binding.pry
+      begin
+        team = Team.find(id)
+        team.destroy
+        return[200, { 'Content-Type' => 'application/json' }, [{message: "Team destroyed"}.to_json]]
+      rescue
+        return [404, { 'Content-Type' => 'application/json' }, [{message: "Team not deleted"}.to_json]]
+      end
+    end
+
+
     #player Create
     if req.path == ('/player') && req.post?
       body = JSON.parse(req.body.read)
       new_player = Player.create(body)
+    
       return [201, { 'Content-Type' => 'application/json' }, [new_player.to_json ]]
+    end
+
+    #team Create
+    if req.path == ('/team') && req.post?
+      body = JSON.parse(req.body.read)
+      new_team = Team.create(body)
+      return [201, { 'Content-Type' => 'application/json' }, [new_team.to_json ]]
     end
 
     #player Show
@@ -54,9 +78,11 @@ class Application
 
     #player Delete
     if req.path.match('/player/') && req.delete?
+      puts "entre aqui"
       id = req.path.split('/')[2]
       begin
         player = Player.find(id)
+        puts player
         player.destroy
         return[200, { 'Content-Type' => 'application/json' }, [{message: "Player destroyed"}.to_json]]
       rescue
@@ -121,7 +147,7 @@ class Application
 
 
     #performance Delete
-    if req.path.match('/performance]/') && req.delete?
+    if req.path.match('/performance/') && req.delete?
       id = req.path.split('/')[2]
       begin
         performance = Performance.find(id)
