@@ -21,6 +21,10 @@ class Application
       return [200, { 'Content-Type' => 'application/json' }, [Game.all.to_json ]]
     end
 
+    #Position Index
+    if req.path == ('/position') && req.get?
+      return [200, { 'Content-Type' => 'application/json' }, [Position.all.to_json ]]
+    end
 
     #team Delete
     if req.path.match('/team/') && req.delete?
@@ -64,13 +68,13 @@ class Application
     end
 
     #player Update
-    if req.path.match('/player/') && req.put?
+    if req.path.match('/player/') && req.patch?
       id = req.path.split('/')[2]
       body= JSON.parse(req.body.read)
       begin
         player = Player.find(id)
-        player_update = player.update(body)
-        return [201, { 'Content-Type' => 'application/json' }, [player_update.to_json]]
+        player.update(body)
+        return [201, { 'Content-Type' => 'application/json' }, [player.to_json]]
       rescue 
         return [404, { 'Content-Type' => 'application/json' }, [{message: "Player not found - not updated"}.to_json]]
       end
@@ -159,5 +163,4 @@ class Application
     end
     res.finish
   end
-
 end
