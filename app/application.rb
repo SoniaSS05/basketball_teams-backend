@@ -30,7 +30,6 @@ class Application
     if req.path.match('/team/') && req.delete?
       id = req.path.split('/')[2]
       puts id
-      binding.pry
       begin
         team = Team.find(id)
         team.destroy
